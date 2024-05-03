@@ -1,16 +1,39 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, ReactNode, SetStateAction, Dispatch } from 'react';
 
-const AppContext = createContext();
-
-export const useUserContext = () => useContext(AppContext);
-
-const UserProvider = ({ children }) => {
-    const [user, setUser] = useState();
-    return (
-        <AppContext.Provider value={[user, setUser]}>
-            {children}
-        </AppContext.Provider>
-    );
+export type User = {
+    id?: string
+    userName: string;
 }
 
-export default UserProvider;
+export interface UserContextInterface {
+    user: User;
+    setUser: Dispatch<SetStateAction<User>>
+}
+
+const defaultState = {
+    user: {
+        userName: "",
+    },
+    setUser: () => { }
+} as UserContextInterface
+
+
+export const UserContext = createContext(defaultState)
+
+type UserProviderProps = {
+    children: ReactNode
+}
+
+
+export function UserProvider({ children }: UserProviderProps) {
+    const [user, setUser] = useState<User>({
+        userName: ""
+    })
+
+
+    return (
+        <UserContext.Provider value={{ user, setUser }}>
+            {children}
+        </UserContext.Provider>
+    )
+}

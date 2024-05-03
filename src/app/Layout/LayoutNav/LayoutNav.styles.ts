@@ -8,7 +8,6 @@ h1{
 
 ul {
     display: flex;
-    gap: 40px;
-    justify-content:center;
+    justify-content:space-around;
 }
 `;

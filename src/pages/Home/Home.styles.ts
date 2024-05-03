@@ -1,6 +1,10 @@
-// import styled from 'styled-components';
+import styled from 'styled-components';
 
-// export const Test = styled.div`
-//  display: flex;
-// `;
-//
+export const TestHome = styled.div`
+
+form{
+        display: flex;
+    justify-content: center;
+    gap:10px;
+}
+`;
