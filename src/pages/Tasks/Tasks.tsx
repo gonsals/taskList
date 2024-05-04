@@ -1,6 +1,8 @@
-//import { Test } from './Tasks.styles';
-import { UserContext } from "../../app/providers/UserProvider";
 import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../app/providers/UserProvider";
+import { Container, Test, TaskContainer } from "./Tasks.styles";
+import PureModal from "react-pure-modal";
+import "react-pure-modal/dist/react-pure-modal.min.css";
 import { TaskType } from "../../common/TaskType";
 import {
     createTask,
@@ -8,23 +10,27 @@ import {
     getTasksById,
     updateTask,
 } from "../../app/services/tasks";
-import { Container, Modal, Test } from "./Tasks.styles";
-import PureModal from "react-pure-modal";
-import "react-pure-modal/dist/react-pure-modal.min.css";
 
 const Tasks = () => {
     const { user } = useContext(UserContext);
 
     const [task, setTask] = useState<TaskType>({ textTask: "" });
     const [tasks, setTasks] = useState<TaskType[] | null>(null);
-    // const [modal, setModal] = useState(false);
-    //TODO https://www.npmjs.com/package/react-pure-modal
-    const [updatedTask, setUpdatedTask] = useState<TaskType>(task);
+    const [modal, setModal] = useState<boolean>(false);
+    const [updatedTask, setUpdatedTask] = useState<TaskType>({ textTask: "" });
 
     useEffect(() => {
-        if (user && user.id) {
-            getTasksById(user.id).then((data) => setTasks(data));
-        }
+        const fetchData = async () => {
+            try {
+                if (user && user.id) {
+                    const data = await getTasksById(user.id);
+                    setTasks(data);
+                }
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+            }
+        };
+        fetchData();
     }, [user]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -32,94 +38,132 @@ const Tasks = () => {
         try {
             if (user && user.id && task.textTask.trim() !== "") {
                 await createTask(task, user.id);
-                const refreshTasks = await getTasksById(user.id);
-                setTasks(refreshTasks);
+                const refreshedTasks = await getTasksById(user.id);
+                setTasks(refreshedTasks);
                 setTask({ textTask: "" });
             }
         } catch (error) {
-            console.error(error);
+            console.error("Error creating task:", error);
         }
     };
 
     const handleDelete = async (taskId: string | undefined) => {
         try {
-            if (taskId && user.id) {
+            if (taskId && user && user.id) {
                 await deleteTask(user.id, taskId);
-                if (user && user.id) {
-                    const refreshTasks = await getTasksById(user.id);
-                    setTasks(refreshTasks);
-                }
+                const refreshedTasks = await getTasksById(user.id);
+                setTasks(refreshedTasks);
             }
         } catch (error) {
-            console.error(error);
+            console.error("Error deleting task:", error);
         }
     };
 
     const handleUpdate = async (taskId: string | undefined) => {
         try {
-            if (taskId && user.id && updatedTask) {
+            if (
+                taskId &&
+                user &&
+                user.id &&
+                updatedTask.textTask.trim() !== ""
+            ) {
                 await updateTask(user.id, taskId, updatedTask);
-                setIsOpen(false);
-                if (user && user.id) {
-                    const refreshTasks = await getTasksById(user.id);
-                    setTasks(refreshTasks);
-                }
+                setModal(false);
+                const refreshedTasks = await getTasksById(user.id);
+                setTasks(refreshedTasks);
             }
         } catch (error) {
-            console.error(error);
+            console.error("Error updating task:", error);
         }
     };
 
     return (
         <Container>
             {user.userName ? (
-                <h2>{user.userName}'s Tasks</h2>
+                <>
+                    <h2>{user.userName}'s Tasks</h2>
+
+                    <form onSubmit={handleSubmit}>
+                        <textarea
+                            value={task.textTask}
+                            onChange={(e) =>
+                                setTask({ ...task, textTask: e.target.value })
+                            }
+                        ></textarea>
+                        <button type="submit">Send</button>
+                    </form>
+
+                    <TaskContainer>
+                        {tasks &&
+                            tasks.map((task) => (
+                                <Test key={task.id}>
+                                    <p>{task.textTask}</p>
+                                    <div className="actionButtons">
+                                        <button
+                                            onClick={() =>
+                                                handleDelete(task.id)
+                                            }
+                                        >
+                                            Delete
+                                        </button>
+                                        <button
+                                            className="button"
+                                            onClick={() => {
+                                                setModal(true);
+                                                setUpdatedTask(task);
+                                            }}
+                                        >
+                                            Update
+                                        </button>
+                                    </div>
+
+                                    <PureModal
+                                        header={`${user.userName}'s Tasks`}
+                                        footer={
+                                            <div className="actionButtons">
+                                                <button
+                                                    onClick={() =>
+                                                        setModal(false)
+                                                    }
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        handleUpdate(
+                                                            updatedTask.id
+                                                        )
+                                                    }
+                                                >
+                                                    Update
+                                                </button>
+                                            </div>
+                                        }
+                                        isOpen={modal}
+                                        closeButton="X"
+                                        closeButtonPosition="header"
+                                        onClose={() => {
+                                            setModal(false);
+                                            return true;
+                                        }}
+                                    >
+                                        <textarea
+                                            value={updatedTask?.textTask}
+                                            onChange={(e) =>
+                                                setUpdatedTask({
+                                                    ...updatedTask,
+                                                    textTask: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </PureModal>
+                                </Test>
+                            ))}
+                    </TaskContainer>
+                </>
             ) : (
                 <h2>User not found</h2>
             )}
-
-            {tasks &&
-                tasks.map((task) => (
-                    <Test key={task.id}>
-                        <p>{task.textTask}</p>
-                        <button onClick={() => handleDelete(task.id)}>
-                            Borrar
-                        </button>
-                        <button onClick={() => setIsOpen(!isOpen)}>
-                            Update
-                        </button>
-                        {isOpen && (
-                            <Modal>
-                                <textarea
-                                    value={
-                                        updatedTask?.textTask || task.textTask
-                                    }
-                                    onChange={(e) =>
-                                        setUpdatedTask({
-                                            ...updatedTask,
-                                            textTask: e.target.value,
-                                        })
-                                    }
-                                />
-                                <button onClick={() => handleUpdate(task.id)}>
-                                    Update
-                                </button>
-                                <button onClick={() => setIsOpen(!isOpen)}>
-                                    Close
-                                </button>
-                            </Modal>
-                        )}
-                    </Test>
-                ))}
-            <form onSubmit={handleSubmit}>
-                <textarea
-                    value={task.textTask}
-                    onChange={(e) =>
-                        setTask({ ...task, textTask: e.target.value })
-                    }
-                ></textarea>
-                <button type="submit">Send</button>
-            </form>
         </Container>
     );
 };

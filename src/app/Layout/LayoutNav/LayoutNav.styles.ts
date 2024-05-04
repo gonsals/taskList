@@ -1,13 +1,14 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Test = styled.div`
+    h1 {
+        font-size: 1.5rem;
+    }
 
-h1{
-    font-size: 1.5rem;
-}
-
-ul {
-    display: flex;
-    justify-content:space-around;
-}
+    ul {
+        padding: 0;
+        display: flex;
+        justify-content: space-evenly;
+        list-style: none;
+    }
 `;

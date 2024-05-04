@@ -2,8 +2,8 @@ import {
     createContext,
     useState,
     ReactNode,
-    SetStateAction,
     Dispatch,
+    SetStateAction,
 } from "react";
 
 export type User = {
@@ -16,23 +16,21 @@ export interface UserContextInterface {
     setUser: Dispatch<SetStateAction<User>>;
 }
 
-const defaultState = {
+const defaultState: UserContextInterface = {
     user: {
         userName: "",
     },
     setUser: () => {},
-} as UserContextInterface;
+};
 
-export const UserContext = createContext(defaultState);
+export const UserContext = createContext<UserContextInterface>(defaultState);
 
 type UserProviderProps = {
     children: ReactNode;
 };
 
 export function UserProvider({ children }: UserProviderProps) {
-    const [user, setUser] = useState<User>({
-        userName: "",
-    });
+    const [user, setUser] = useState<User>({ userName: "" });
 
     return (
         <UserContext.Provider value={{ user, setUser }}>
