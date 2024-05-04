@@ -10,7 +10,7 @@ const Router = () => (
                 <Route path="/tasks" element={<Tasks />} />
                 <Route path="*" element={<h1>404</h1>} />
             </Routes>
-        </LayoutNav >
+        </LayoutNav>
     </BrowserRouter>
 );
 
