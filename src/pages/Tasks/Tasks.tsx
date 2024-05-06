@@ -19,6 +19,10 @@ const Tasks = () => {
     const [modal, setModal] = useState<boolean>(false);
     const [updatedTask, setUpdatedTask] = useState<TaskType>({ textTask: "" });
 
+
+    console.log(user)
+    console.log("first")
+
     useEffect(() => {
         const fetchData = async () => {
             try {

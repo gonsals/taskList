@@ -5,22 +5,21 @@ import {
     Dispatch,
     SetStateAction,
 } from "react";
+import { UserType } from "../../common/UserType";
 
-export type User = {
-    id?: string;
-    userName: string;
-};
 
 export interface UserContextInterface {
-    user: User;
-    setUser: Dispatch<SetStateAction<User>>;
+    user: UserType;
+    setUser: Dispatch<SetStateAction<UserType>>;
 }
 
 const defaultState: UserContextInterface = {
     user: {
         userName: "",
+        email: "",
+        password: "",
     },
-    setUser: () => {},
+    setUser: () => { },
 };
 
 export const UserContext = createContext<UserContextInterface>(defaultState);
@@ -30,7 +29,11 @@ type UserProviderProps = {
 };
 
 export function UserProvider({ children }: UserProviderProps) {
-    const [user, setUser] = useState<User>({ userName: "" });
+    const [user, setUser] = useState<UserType>({
+        userName: "",
+        email: "",
+        password: "",
+    });
 
     return (
         <UserContext.Provider value={{ user, setUser }}>

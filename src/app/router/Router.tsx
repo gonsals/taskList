@@ -1,17 +1,18 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "../../pages/Home/index";
-import LayoutNav from "../Layout/LayoutNav/index";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Tasks from "../../pages/Tasks/index";
-const Router = () => (
-    <BrowserRouter>
-        <LayoutNav>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/tasks" element={<Tasks />} />
-                <Route path="*" element={<h1>404</h1>} />
-            </Routes>
-        </LayoutNav>
-    </BrowserRouter>
+import LogIn from "../../pages/LogIn";
+import SignIn from "../../pages/SignIn";
+
+const AppRouter = () => (
+    <Router>
+        <Routes>
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/logIn" element={<LogIn />} />
+            <Route path="/signIn" element={<SignIn />} />
+            <Route path="/" element={<Navigate to="/logIn" />} />
+            <Route path="*" element={<h1>404</h1>} />
+        </Routes>
+    </Router>
 );
 
-export default Router;
+export default AppRouter;
