@@ -9,19 +9,31 @@ import {
     deleteTask,
     getTasksById,
     updateTask,
+    getUserById,
 } from "../../app/services/tasks";
+import { useNavigate } from "react-router-dom";
 
 const Tasks = () => {
-    const { user } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
 
     const [task, setTask] = useState<TaskType>({ textTask: "" });
     const [tasks, setTasks] = useState<TaskType[] | null>(null);
     const [modal, setModal] = useState<boolean>(false);
     const [updatedTask, setUpdatedTask] = useState<TaskType>({ textTask: "" });
+    const navigate = useNavigate();
 
-
-    console.log(user)
-    console.log("first")
+    useEffect(() => {
+        const takeUserData = async () => {
+            if (user.id) {
+                const userDb = await getUserById(user.id);
+                const userName = userDb?.email.split("@");
+                userDb &&
+                    userName &&
+                    setUser({ ...userDb, userName: userName[0] });
+            }
+        };
+        takeUserData();
+    }, [setUser, user.id]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,13 +41,15 @@ const Tasks = () => {
                 if (user && user.id) {
                     const data = await getTasksById(user.id);
                     setTasks(data);
+                } else {
+                    navigate("/");
                 }
             } catch (error) {
                 console.error("Error fetching tasks:", error);
             }
         };
         fetchData();
-    }, [user]);
+    }, [navigate, user]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

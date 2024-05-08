@@ -1,4 +1,5 @@
 import { TaskType } from "../../common/TaskType";
+import { UserType } from "../../common/UserType";
 import {
     addDoc,
     collection,
@@ -7,23 +8,23 @@ import {
     doc,
     getDoc,
     getDocs,
-    query,
     updateDoc,
-    where,
 } from "./firebase";
 
 const collectionName = "userTasks";
 
-// Accede a una tarea por su nombre
-export const access = async (name: string): Promise<string> => {
-    const colRef = collection(db, collectionName);
-    const result = await getDocs(query(colRef, where("name", "==", name)));
-
-    if (result.empty) {
-        const docRef = await addDoc(colRef, { name });
-        return docRef.id;
-    } else {
-        return result.docs[0].id;
+export const getUserById = async (uid: string): Promise<UserType | null> => {
+    try {
+        const docRef = doc(db, "usersTask", uid);
+        const docSnapshot = await getDoc(docRef);
+        if (docSnapshot.exists()) {
+            return { ...docSnapshot.data(), id: docSnapshot.id } as UserType;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error("Error al obtener el user:", error);
+        throw error;
     }
 };
 

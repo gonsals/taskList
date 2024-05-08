@@ -7,7 +7,6 @@ import {
 } from "react";
 import { UserType } from "../../common/UserType";
 
-
 export interface UserContextInterface {
     user: UserType;
     setUser: Dispatch<SetStateAction<UserType>>;
@@ -15,11 +14,10 @@ export interface UserContextInterface {
 
 const defaultState: UserContextInterface = {
     user: {
-        userName: "",
         email: "",
         password: "",
     },
-    setUser: () => { },
+    setUser: () => {},
 };
 
 export const UserContext = createContext<UserContextInterface>(defaultState);
@@ -30,7 +28,6 @@ type UserProviderProps = {
 
 export function UserProvider({ children }: UserProviderProps) {
     const [user, setUser] = useState<UserType>({
-        userName: "",
         email: "",
         password: "",
     });
