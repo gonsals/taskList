@@ -11,11 +11,12 @@ import {
     updateDoc,
 } from "./firebase";
 
-const collectionName = "userTasks";
+const users = "usersTask"
+const collectionName = "tasks";
 
 export const getUserById = async (uid: string): Promise<UserType | null> => {
     try {
-        const docRef = doc(db, "usersTask", uid);
+        const docRef = doc(db, users, uid);
         const docSnapshot = await getDoc(docRef);
         if (docSnapshot.exists()) {
             return { ...docSnapshot.data(), id: docSnapshot.id } as UserType;
@@ -37,7 +38,7 @@ export const createTask = async (
         if (!task.textTask) {
             throw new Error("La tarea no tiene texto");
         }
-        const colRef = collection(db, collectionName, userId, "tasks");
+        const colRef = collection(db, users, userId, collectionName);
 
         const tasks = await getTasksById(userId);
 
@@ -63,7 +64,7 @@ export const getTasksById = async (
     userId: string
 ): Promise<TaskType[] | null> => {
     try {
-        const colRef = collection(db, collectionName, userId, "tasks");
+        const colRef = collection(db, users, userId, collectionName);
         const querySnapshot = await getDocs(colRef);
 
         const tasks: TaskType[] = [];
@@ -81,7 +82,7 @@ export const getTasksById = async (
 // DELETE
 export const deleteTask = async (userId: string, id: string) => {
     try {
-        const docRef = doc(db, collectionName, userId, "tasks", id);
+        const docRef = doc(db, users, userId, collectionName, id);
         await deleteDoc(docRef);
     } catch (error) {
         console.error("Error al eliminar la task:", error);
@@ -96,7 +97,7 @@ export const updateTask = async (
     updatedData: TaskType
 ): Promise<TaskType | null> => {
     try {
-        const docRef = doc(db, collectionName, userId, "tasks", id);
+        const docRef = doc(db, users, userId, collectionName, id);
         await updateDoc(docRef, { ...updatedData });
         const updatedDocSnapshot = await getDoc(docRef);
         if (updatedDocSnapshot.exists()) {

@@ -9,31 +9,22 @@ import {
     deleteTask,
     getTasksById,
     updateTask,
-    getUserById,
 } from "../../app/services/tasks";
-import { useNavigate } from "react-router-dom";
+import { logout } from "../../app/services/mailAndPassword";
 
 const Tasks = () => {
-    const { user, setUser } = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     const [task, setTask] = useState<TaskType>({ textTask: "" });
     const [tasks, setTasks] = useState<TaskType[] | null>(null);
     const [modal, setModal] = useState<boolean>(false);
     const [updatedTask, setUpdatedTask] = useState<TaskType>({ textTask: "" });
-    const navigate = useNavigate();
 
-    useEffect(() => {
-        const takeUserData = async () => {
-            if (user.id) {
-                const userDb = await getUserById(user.id);
-                const userName = userDb?.email.split("@");
-                userDb &&
-                    userName &&
-                    setUser({ ...userDb, userName: userName[0] });
-            }
-        };
-        takeUserData();
-    }, [setUser, user.id]);
+
+
+    console.log(user)
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,15 +32,14 @@ const Tasks = () => {
                 if (user && user.id) {
                     const data = await getTasksById(user.id);
                     setTasks(data);
-                } else {
-                    navigate("/");
                 }
             } catch (error) {
                 console.error("Error fetching tasks:", error);
             }
         };
         fetchData();
-    }, [navigate, user]);
+    }, [user]);
+
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -65,9 +55,9 @@ const Tasks = () => {
         }
     };
 
-    const handleDelete = async (taskId: string | undefined) => {
+    const handleDelete = async (taskId: string) => {
         try {
-            if (taskId && user && user.id) {
+            if (user && user.id) {
                 await deleteTask(user.id, taskId);
                 const refreshedTasks = await getTasksById(user.id);
                 setTasks(refreshedTasks);
@@ -77,15 +67,10 @@ const Tasks = () => {
         }
     };
 
-    const handleUpdate = async (taskId: string | undefined) => {
+    const handleUpdate = async () => {
         try {
-            if (
-                taskId &&
-                user &&
-                user.id &&
-                updatedTask.textTask.trim() !== ""
-            ) {
-                await updateTask(user.id, taskId, updatedTask);
+            if (user && user.id && updatedTask.id && updatedTask.textTask.trim() !== "") {
+                await updateTask(user.id, updatedTask.id, updatedTask);
                 setModal(false);
                 const refreshedTasks = await getTasksById(user.id);
                 setTasks(refreshedTasks);
@@ -95,94 +80,82 @@ const Tasks = () => {
         }
     };
 
+
     return (
         <Container>
-            {user.userName ? (
+            {user ? (
                 <>
-                    <h2>{user.userName}'s Tasks</h2>
+                    <button onClick={() => logout()}>Log out</button>
+                    {user?.userName || user?.displayName ? (
+                        <h2>{user.userName ? `${user.userName}'s Tasks` : `${user.displayName}'s Tasks`}</h2>
+                    ) : (
+                        <h2> Loading...</h2>
+                    )}
 
                     <form onSubmit={handleSubmit}>
                         <textarea
                             value={task.textTask}
-                            onChange={(e) =>
-                                setTask({ ...task, textTask: e.target.value })
-                            }
-                        ></textarea>
+                            onChange={(e) => setTask({ ...task, textTask: e.target.value })}
+                        />
                         <button type="submit">Send</button>
                     </form>
 
                     <TaskContainer>
                         {tasks &&
-                            tasks.map((task) => (
-                                <Test key={task.id}>
-                                    <p>{task.textTask}</p>
-                                    <div className="actionButtons">
-                                        <button
-                                            onClick={() =>
-                                                handleDelete(task.id)
-                                            }
-                                        >
-                                            Delete
-                                        </button>
-                                        <button
-                                            className="button"
-                                            onClick={() => {
-                                                setModal(true);
-                                                setUpdatedTask(task);
-                                            }}
-                                        >
-                                            Update
-                                        </button>
-                                    </div>
-
-                                    <PureModal
-                                        header={`${user.userName}'s Tasks`}
-                                        footer={
+                            tasks.map((task) => {
+                                if (task.id) {
+                                    return (
+                                        <Test key={task.id}>
+                                            <p>{task.textTask}</p>
                                             <div className="actionButtons">
+                                                <button onClick={() => handleDelete(task.id ? task.id : "")}>Delete</button>
                                                 <button
-                                                    onClick={() =>
-                                                        setModal(false)
-                                                    }
-                                                >
-                                                    Cancel
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        handleUpdate(
-                                                            updatedTask.id
-                                                        )
-                                                    }
+                                                    className="button"
+                                                    onClick={() => {
+                                                        setModal(true);
+                                                        setUpdatedTask(task);
+                                                    }}
                                                 >
                                                     Update
                                                 </button>
                                             </div>
-                                        }
-                                        isOpen={modal}
-                                        closeButton="X"
-                                        closeButtonPosition="header"
-                                        onClose={() => {
-                                            setModal(false);
-                                            return true;
-                                        }}
-                                    >
-                                        <textarea
-                                            value={updatedTask?.textTask}
-                                            onChange={(e) =>
-                                                setUpdatedTask({
-                                                    ...updatedTask,
-                                                    textTask: e.target.value,
-                                                })
-                                            }
-                                        />
-                                    </PureModal>
-                                </Test>
-                            ))}
+
+                                            <PureModal
+                                                header={`${user.userName ? user.userName : user.displayName}'s Tasks`}
+                                                footer={
+                                                    <div className="actionButtons">
+                                                        <button onClick={() => setModal(false)}>Cancel</button>
+                                                        <button onClick={handleUpdate}>Update</button>
+                                                    </div>
+                                                }
+                                                isOpen={modal}
+                                                closeButton="X"
+                                                closeButtonPosition="header"
+                                                onClose={() => setModal(false)}
+                                            >
+                                                <textarea
+                                                    value={updatedTask.textTask}
+                                                    onChange={(e) =>
+                                                        setUpdatedTask({
+                                                            ...updatedTask,
+                                                            textTask: e.target.value,
+                                                        })
+                                                    }
+                                                />
+                                            </PureModal>
+                                        </Test>
+                                    );
+                                }
+                                return <h1>Id not found</h1>;
+                            })}
                     </TaskContainer>
+
                 </>
             ) : (
                 <h2>User not found</h2>
-            )}
-        </Container>
+            )
+            }
+        </Container >
     );
 };
 

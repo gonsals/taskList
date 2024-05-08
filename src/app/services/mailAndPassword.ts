@@ -9,6 +9,8 @@ import {
     setDoc,
 } from "./firebase";
 
+const collectionName = "usersTask"
+
 export const signUp = async (email: string, password: string) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(
@@ -18,10 +20,13 @@ export const signUp = async (email: string, password: string) => {
         );
         await sendEmailVerification(userCredential.user);
         const user = userCredential.user;
-        const docRef = doc(db, "usersTask", user.uid);
+        const docRef = doc(db, collectionName, user.uid);
+        const userName = user.email && user.email.split("@")[0];
+
         await setDoc(docRef, {
             uid: user.uid,
             email: user.email,
+            userName: userName
         });
         return user.uid;
     } catch (err: unknown) {
@@ -45,4 +50,5 @@ export const signIn = async (email: string, password: string) => {
 };
 
 export const getCurrentUserId = async () => auth.currentUser?.uid;
+
 export const logout = async () => await signOut(auth);

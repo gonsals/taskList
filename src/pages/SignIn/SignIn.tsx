@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../app/providers/UserProvider";
 import { UserType } from "../../common/UserType";
 import { TestHome } from "./SignIn.styles";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { signUp } from "../../app/services/mailAndPassword";
 import toast from "react-hot-toast";
 
@@ -14,7 +14,7 @@ const SignIn = () => {
     const { user, setUser } = useContext(UserContext);
     const [userInput, setUserInput] = useState<UserType>({ ...user });
     const [errorMsg, setErrorMsg] = useState<ErrorType>();
-    const navigate = useNavigate();
+
 
     useEffect(() => {
         if (errorMsg) {
@@ -27,8 +27,8 @@ const SignIn = () => {
         if (userInput.password) {
             try {
                 const data = await signUp(userInput.email, userInput.password);
-                setUser({ ...user, id: data, email: userInput.email });
-                navigate("/logIn");
+                setUser({ id: data, email: userInput.email, userName: userInput.userName });
+
             } catch (error: unknown) {
                 if (error instanceof Error) {
                     setErrorMsg(error);
@@ -48,7 +48,7 @@ const SignIn = () => {
     return (
         <TestHome>
             <form onSubmit={handleSubmit}>
-                <h3>Sign in</h3>
+                <h3>Register</h3>
                 <input
                     type="text"
                     name="email"

@@ -2,21 +2,21 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../app/providers/UserProvider";
 import { UserType } from "../../common/UserType";
 import { TestHome } from "./LogIn.styles";
-import { Link, useNavigate } from "react-router-dom";
 import { signIn } from "../../app/services/mailAndPassword";
 import toast from "react-hot-toast";
 import GoogleSignInButton from "../../components/GoogleSignInButton";
 import { loginWithGoogle } from "../../app/services/googleLogIn";
+import { getUserById } from "../../app/services/tasks";
 
 interface ErrorType {
     message: string;
 }
 
 const LogIn = () => {
-    const { user, setUser } = useContext(UserContext);
-    const [userInput, setUserInput] = useState<UserType>({ ...user });
-    const [errorMsg, setErrorMsg] = useState<ErrorType>();
-    const navigate = useNavigate();
+    const [userInput, setUserInput] = useState<UserType>({ email: "", password: "" });
+    const { setUser } = useContext(UserContext);
+    const [errorMsg, setErrorMsg] = useState<ErrorType | null>(null);
+
 
     useEffect(() => {
         if (errorMsg) {
@@ -26,32 +26,20 @@ const LogIn = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (userInput.password) {
-            try {
-                toast.promise(
-                    signIn(userInput.email, userInput.password).then((data) => {
-                        data &&
-                            setUser({
-                                ...user,
-                                id: data,
-                                email: userInput.email,
-                            });
+        try {
+            if (userInput.password) {
+                const data = await signIn(userInput.email, userInput.password);
+                if (data) {
+                    const userObj = await getUserById(data);
+                    userObj && setUser(userObj);
+                    toast.success("Logged in successfully!");
 
-                        console.log(user);
-                        console.log(data);
-
-                        navigate("/tasks");
-                    }),
-                    {
-                        loading: "Saving...",
-                        success: <b>Looking tasks!</b>,
-                        error: <b>Bad Request </b>,
-                    }
-                );
-            } catch (error) {
-                if (error instanceof Error) {
-                    setErrorMsg({ message: error.message });
                 }
+            }
+        } catch (error) {
+            console.error("Error signing in:", error);
+            if (error instanceof Error) {
+                setErrorMsg({ message: error.message });
             }
         }
     };
@@ -61,23 +49,19 @@ const LogIn = () => {
     ) => {
         event.preventDefault();
         try {
-            toast.promise(
-                loginWithGoogle().then((data) => {
-                    setUser({
-                        id: data.uid,
-                        email: data.email || "",
-                    });
-                    navigate("/tasks");
-                }),
-                {
-                    loading: "Loging...",
-                    success: <b>Looking tasks!</b>,
-                    error: <b>Bad Request </b>,
-                }
-            );
-        } catch (error: unknown) {
+            const data = await loginWithGoogle();
+            setUser({
+                id: data.uid,
+                email: data.email || "",
+                displayName: data.displayName || "",
+            });
+            toast.success("Logged in with Google successfully!");
+
+
+        } catch (error) {
+            console.error("Error signing in with Google:", error);
             if (error instanceof Error) {
-                setErrorMsg(error);
+                setErrorMsg({ message: error.message });
             }
         }
     };
@@ -93,24 +77,24 @@ const LogIn = () => {
     return (
         <TestHome>
             <form onSubmit={handleSubmit}>
-                <h3>LogIn</h3>
+                <h3>Log in</h3>
                 <input
                     type="text"
                     name="email"
                     placeholder="Email"
-                    value={userInput.email || ""}
+                    value={userInput.email}
                     onChange={handleInputChange}
                 />
                 <input
                     type="password"
                     name="password"
                     placeholder="Password"
-                    value={userInput.password || ""}
+                    value={userInput.password}
                     onChange={handleInputChange}
                 />
-                <button type="submit">Send</button>
+                <button type="submit">Log in</button>
                 <GoogleSignInButton onClick={handleSubmitGoogle} />
-                <Link to={"/signIn"}>Create account</Link>
+                {/* <Link to="/signIn">Create account</Link> */}
             </form>
         </TestHome>
     );

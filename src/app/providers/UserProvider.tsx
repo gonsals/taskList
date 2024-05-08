@@ -17,7 +17,7 @@ const defaultState: UserContextInterface = {
         email: "",
         password: "",
     },
-    setUser: () => {},
+    setUser: () => { },
 };
 
 export const UserContext = createContext<UserContextInterface>(defaultState);
