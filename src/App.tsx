@@ -4,8 +4,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useContext } from 'react';
 import { auth } from "./app/services/firebase.js";
 import { UserContext } from './app/providers/UserProvider';
-import LogIn from "./pages/LogIn/index.js";
 import { getUserById } from './app/services/tasks';
+import SignInRegister from "./pages/SignInRegister/index.js";
 
 const App = () => {
 
@@ -33,8 +33,13 @@ const App = () => {
         return () => unsubscribe();
     }, []);
 
+    console.log("213123123", user)
 
-    return user ? <Router /> : <LogIn />
+    if (user.email === "") {
+        return <SignInRegister />
+    } else {
+        return <Router />
+    }
 };
 
 export default App;

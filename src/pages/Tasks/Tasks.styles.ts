@@ -70,6 +70,15 @@ export const Container = styled.div`
         padding: 12px 15px 12px 15px;
         background: #242424;
     }
+
+    a{
+        display: flex;
+        background-color: #646cff;
+        border-radius: 40px;
+        padding: 10px;
+        color: white;
+        cursor: pointer;
+    }
 `;
 
 export const TaskContainer = styled.div`
