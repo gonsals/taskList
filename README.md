@@ -1,77 +1,65 @@
-# Sistema de Gestión de Pacientes
+# Task Management Application
 
-## Descripción
+## Description
 
-El Sistema de Gestión de Pacientes es una aplicación web diseñada para simplificar el proceso de gestión de registros de pacientes. Ofrece funcionalidades para crear, leer, actualizar y eliminar datos de pacientes. Utilizando React.js para el frontend y Firebase para los servicios backend, la aplicación garantiza una gestión eficiente de datos con una interfaz fácil de usar.
+The Task Management Application is a web application designed to allow users to create, read, update, and delete tasks. It uses Firebase for the backend and React.js for the frontend, providing a smooth and efficient experience for task management. The application provides user authentication and real-time data storage.
 
-## Funcionalidades Clave
+## Key Features
 
-- **Crear Registros de Pacientes:** Agregar nuevos detalles de pacientes, incluyendo nombre, apellido y fecha de asistencia.
-- **Leer Registros de Pacientes:** Ver una lista de registros de pacientes existentes con soporte de paginación.
-- **Actualizar Registros de Pacientes:** Editar información de pacientes existentes con actualizaciones en tiempo real.
-- **Eliminar Registros de Pacientes:** Eliminar registros de pacientes de forma segura con mensajes de confirmación.
+- **User Registration and Login:** Users can register and log in to the application to access their tasks.
+- **Login with Google:** Users also have the option to log in with their Google accounts for a more convenient experience.
+- **Create Tasks:** Users can add new tasks with an associated description.
+- **Read Tasks:** Users can view all their existing tasks.
+- **Update Tasks:** Users can edit the content of their existing tasks.
+- **Delete Tasks:** Users can delete tasks they no longer need.
 
-## Tecnologías Utilizadas
+## Technologies Used
 
-- [React.js](https://reactjs.org/) - Una biblioteca de JavaScript para construir interfaces de usuario.
-- [Firebase](https://firebase.google.com/) - Una plataforma integral de desarrollo de aplicaciones con herramientas para ayudar a construir, mejorar y hacer crecer aplicaciones.
-  - Firestore - Una base de datos flexible y escalable para el desarrollo móvil, web y de servidor.
-  - Autenticación - Agrega fácilmente inicio de sesión a tu aplicación web.
-  - Almacenamiento - Almacena y sirve contenido generado por el usuario, como fotos o videos.
-- [React Router](https://reactrouter.com/) - Enrutamiento declarativo para React.js.
-- [Componente de Tabla de Datos de React](https://github.com/jbetancur/react-data-table-component) - Un componente de tabla receptivo para React.js con clasificación, paginación y filtrado integrados.
-- [react-hot-toast](https://react-hot-toast.com/) - Una biblioteca para notificaciones de tostadas en aplicaciones React.
+- [React.js](https://reactjs.org/) - A JavaScript library for building user interfaces.
+- [Firebase](https://firebase.google.com/) - A comprehensive app development platform with tools for authentication, real-time data storage, and more.
+  - Firestore - A flexible and scalable NoSQL database.
+  - Authentication - Allows users to securely register and log in.
+- [React Router](https://reactrouter.com/) - Declarative routing for React.js.
+- [React Pure Modal](https://www.npmjs.com/package/react-pure-modal) - A simple modal component for React.js.
+- [react-hot-toast](https://react-hot-toast.com/) - A library for toast notifications in React applications.
 
-## Instalación
+## Installation
 
-1. **Clonar el repositorio:** 
+1. **Clone the Repository:** 
    ```bash
-   git clone https://github.com/gonsals/taskList.git
+   git clone https://github.com/user/taskList.git
 
-2. **Ir al directorio del proyecto:**
+2. **Navigate to the Project Directory:**
     ```bash
     cd taskList
-3. **Instalar dependencias:**
+3. **Install Dependencies:**
     ```bash
     npm install
 
-4. **Crear un proyecto de Firebase:**
+4. **Configure Firebase:**
 
-Configura los servicios Firestore, Autenticación y Almacenamiento. Sigue las instrucciones en la [Documentación de Firebase](https://firebase.google.com/docs) para obtener pasos detallados de configuración.
+   - Create a project in Firebase.
+   - Set up Firestore and Authentication in your Firebase project.
+   - Update the Firebase configuration in the necessary project files.
 
-5. **Configurar credenciales de Firebase:**
-
-Actualiza la configuración de Firebase en firebase.ts con las credenciales de tu proyecto de Firebase.
-
-6. **Ejecutar la aplicación:**
+5. **Run the Application:**
     ```bash
     npm start
 
+## Usage
 
-## Uso
+- To use the application, register and log in with your credentials.
+- You can also log in with your Google account for a faster and more convenient experience.
+- Once logged in, you'll be able to add new tasks, view existing ones, update them, or delete them as needed.
 
-- Accede a la aplicación a través de la URL proporcionada o ejecutándola localmente.
-- Navega por diferentes páginas usando el menú de navegación.
-- Utiliza la página de Crear para agregar nuevos registros de pacientes.
-- Visualiza los registros de pacientes existentes en la página de Leer.
-- Actualiza o elimina registros de pacientes en la página de Actualizar/Eliminar.
+## License
 
-## Licencia
+This project is licensed under the [MIT License](https://choosealicense.com/licenses/mit/).
 
-Este proyecto está licenciado bajo la [Licencia MIT](https://choosealicense.com/licenses/mit/).
+## Authors
 
-## Autores
+- [@username](https://www.github.com/gonsals)
 
-- [@marcgonzaleztarrio](https://www.github.com/marcgonzaleztarrio)
+## Contact
 
-## Reconocimientos
-
-- [Documentación de React.js](https://reactjs.org/)
-- [Documentación de Firebase](https://firebase.google.com/docs)
-- [Documentación de React Router](https://reactrouter.com/)
-- [Documentación de React Data Table Component](https://github.com/jbetancur/react-data-table-component)
-- [Documentación de react-hot-toast](https://react-hot-toast.com/)
-
-## Contacto
-
-Para cualquier pregunta o comentario, no dudes en contactarnos en marcgonzaleztarrio@gmail.com.
+For any questions or comments, feel free to contact us at marcgonzaleztarrio@gmail.com.
