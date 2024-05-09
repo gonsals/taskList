@@ -20,12 +20,6 @@ const Tasks = () => {
     const [modal, setModal] = useState<boolean>(false);
     const [updatedTask, setUpdatedTask] = useState<TaskType>({ textTask: "" });
 
-
-
-    console.log(user)
-
-
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -39,7 +33,6 @@ const Tasks = () => {
         };
         fetchData();
     }, [user]);
-
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -69,7 +62,12 @@ const Tasks = () => {
 
     const handleUpdate = async () => {
         try {
-            if (user && user.id && updatedTask.id && updatedTask.textTask.trim() !== "") {
+            if (
+                user &&
+                user.id &&
+                updatedTask.id &&
+                updatedTask.textTask.trim() !== ""
+            ) {
                 await updateTask(user.id, updatedTask.id, updatedTask);
                 setModal(false);
                 const refreshedTasks = await getTasksById(user.id);
@@ -80,14 +78,29 @@ const Tasks = () => {
         }
     };
 
-
     return (
         <Container>
             {user ? (
                 <>
-                    <a onClick={() => logout()}> <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" /></svg><span>log out</span></a>
+                    <a onClick={() => logout()}>
+                        {" "}
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="24px"
+                            viewBox="0 -960 960 960"
+                            width="24px"
+                            fill="#fff"
+                        >
+                            <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+                        </svg>
+                        <span>log out</span>
+                    </a>
                     {user?.userName || user?.displayName ? (
-                        <h2>{user.userName ? `${user.userName}'s Tasks` : `${user.displayName}'s Tasks`}</h2>
+                        <h2>
+                            {user.userName
+                                ? `${user.userName}'s Tasks`
+                                : `${user.displayName}'s Tasks`}
+                        </h2>
                     ) : (
                         <h2> Loading...</h2>
                     )}
@@ -95,7 +108,9 @@ const Tasks = () => {
                     <form onSubmit={handleSubmit}>
                         <textarea
                             value={task.textTask}
-                            onChange={(e) => setTask({ ...task, textTask: e.target.value })}
+                            onChange={(e) =>
+                                setTask({ ...task, textTask: e.target.value })
+                            }
                         />
                         <button type="submit">Send</button>
                     </form>
@@ -108,7 +123,17 @@ const Tasks = () => {
                                         <Test key={task.id}>
                                             <p>{task.textTask}</p>
                                             <div className="actionButtons">
-                                                <button onClick={() => handleDelete(task.id ? task.id : "")}>Delete</button>
+                                                <button
+                                                    onClick={() =>
+                                                        handleDelete(
+                                                            task.id
+                                                                ? task.id
+                                                                : ""
+                                                        )
+                                                    }
+                                                >
+                                                    Delete
+                                                </button>
                                                 <button
                                                     className="button"
                                                     onClick={() => {
@@ -121,11 +146,27 @@ const Tasks = () => {
                                             </div>
 
                                             <PureModal
-                                                header={`${user.userName ? user.userName : user.displayName}'s Tasks`}
+                                                header={`${
+                                                    user.userName
+                                                        ? user.userName
+                                                        : user.displayName
+                                                }'s Tasks`}
                                                 footer={
                                                     <div className="actionButtons">
-                                                        <button onClick={() => setModal(false)}>Cancel</button>
-                                                        <button onClick={handleUpdate}>Update</button>
+                                                        <button
+                                                            onClick={() =>
+                                                                setModal(false)
+                                                            }
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            onClick={
+                                                                handleUpdate
+                                                            }
+                                                        >
+                                                            Update
+                                                        </button>
                                                     </div>
                                                 }
                                                 isOpen={modal}
@@ -138,7 +179,8 @@ const Tasks = () => {
                                                     onChange={(e) =>
                                                         setUpdatedTask({
                                                             ...updatedTask,
-                                                            textTask: e.target.value,
+                                                            textTask:
+                                                                e.target.value,
                                                         })
                                                     }
                                                 />
@@ -149,13 +191,11 @@ const Tasks = () => {
                                 return <h1>Id not found</h1>;
                             })}
                     </TaskContainer>
-
                 </>
             ) : (
                 <h2>User not found</h2>
-            )
-            }
-        </Container >
+            )}
+        </Container>
     );
 };
 

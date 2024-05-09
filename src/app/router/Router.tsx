@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Tasks from "../../pages/Tasks/index";
-import LogIn from "../../pages/SignInRegister/index";
 import SignInRegister from "../../pages/SignInRegister/SignInRegister";
 
 const AppRouter = () => (

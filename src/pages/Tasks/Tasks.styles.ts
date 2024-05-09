@@ -71,13 +71,14 @@ export const Container = styled.div`
         background: #242424;
     }
 
-    a{
+    a {
         display: flex;
         background-color: #646cff;
         border-radius: 40px;
-        padding: 10px;
+        padding: 5px 20px;
         color: white;
         cursor: pointer;
+        margin-bottom: 20px;
     }
 `;
 
