@@ -26,11 +26,11 @@ El Sistema de Gestión de Pacientes es una aplicación web diseñada para simpli
 
 1. **Clonar el repositorio:** 
    ```bash
-   git clone https://github.com/marcgonzaleztarrio/hospital.git
+   git clone https://github.com/gonsals/taskList.git
 
 2. **Ir al directorio del proyecto:**
     ```bash
-    cd hospital
+    cd taskList
 3. **Instalar dependencias:**
     ```bash
     npm install
